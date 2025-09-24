@@ -5,18 +5,18 @@ import type { IAuthService } from '../../services/AuthService'
 
 export const getNextPathForAuth = (pathTo: string, authService: IAuthService): string => {
   if (
-    authService.getIsLoggedIn() === true &&
+    authService.getIsLoggedIn() &&
     (pathTo === paths.logIn || pathTo === paths.authCallback)
   ) {
     return paths.top
   }
 
-  if (authService.getIsLoggedIn() === true) {
+  if (authService.getIsLoggedIn()) {
     return pathTo
   }
 
   if (
-    authService.getIsLoggedIn() === false &&
+    !authService.getIsLoggedIn() &&
     (pathTo === paths.logIn || pathTo === paths.authCallback)
   ) {
     return pathTo
