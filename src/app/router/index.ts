@@ -1,4 +1,4 @@
-import { authNavigationGuardBeforeEach } from 'src/shared/authn/views/routes/authNavigationGuardBeforeEach'
+import { authNavigationGuardBeforeEach } from 'src/features/shared.authn/views/routes/authNavigationGuardBeforeEach'
 import { paths } from 'src/shared/routes/paths'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -21,12 +21,12 @@ const router = createRouter({
     {
       path: paths.logIn,
       name: 'login',
-      component: () => import('src/shared/authn/views/pages/LogInView.vue'),
+      component: () => import('src/features/shared.authn/views/pages/LogInView.vue'),
     },
     {
       path: paths.authCallback,
       name: 'authCallback',
-      component: () => import('src/shared/authn/views/pages/AuthCallbackView.vue'),
+      component: () => import('src/features/shared.authn/views/pages/AuthCallbackView.vue'),
     },
   ],
 })
