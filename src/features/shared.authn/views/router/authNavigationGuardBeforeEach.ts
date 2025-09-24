@@ -1,6 +1,6 @@
 import type { NavigationGuardWithThis } from 'vue-router'
 import { authService } from '../variables/authService'
-import { paths } from 'src/shared/routes/paths'
+import { paths } from 'src/shared/router/paths'
 
 const isAuthPath = (path: string): boolean => {
   const authPaths: string[] = [paths.logIn, paths.authCallback]

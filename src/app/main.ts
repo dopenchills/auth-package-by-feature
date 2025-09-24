@@ -1,7 +1,7 @@
 import '../shared/views/assets/main.css'
 
 import { createApp } from 'vue'
-import router from './router/index'
+import router from './router'
 import App from './App.vue'
 
 const app = createApp(App)

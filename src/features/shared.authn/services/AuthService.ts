@@ -1,6 +1,6 @@
 import { err, ok, type Result } from 'src/shared/result/Result'
 import type { AuthState } from '../models/AuthState'
-import { paths } from 'src/shared/routes/paths'
+import { paths } from 'src/shared/router/paths'
 
 export interface IAuthService {
   logIn(): Promise<Result<void>>

@@ -6,7 +6,7 @@
 import { onMounted } from 'vue'
 import { authService } from '../variables/authService'
 import { useRouter } from 'vue-router'
-import { paths } from 'src/shared/routes/paths'
+import { paths } from 'src/shared/router/paths'
 
 const router = useRouter()
 
