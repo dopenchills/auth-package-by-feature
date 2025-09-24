@@ -1,24 +1,22 @@
 import type { NavigationGuardWithThis } from 'vue-router'
 import { authService } from '../variables/authService'
 import { paths } from 'src/shared/routes/paths'
-import type { IAuthService } from '../../services/AuthService'
 
-export const getNextPathForAuth = (pathTo: string, authService: IAuthService): string => {
-  if (
-    authService.getIsLoggedIn() &&
-    (pathTo === paths.logIn || pathTo === paths.authCallback)
-  ) {
+const isAuthPath = (path: string): boolean => {
+  const authPaths: string[] = [paths.logIn, paths.authCallback]
+  return authPaths.includes(path)
+}
+
+export const getNextPathForAuth = (pathTo: string, isLoggedIn: boolean): string => {
+  if (isLoggedIn && isAuthPath(pathTo)) {
     return paths.top
   }
 
-  if (authService.getIsLoggedIn()) {
+  if (isLoggedIn) {
     return pathTo
   }
 
-  if (
-    !authService.getIsLoggedIn() &&
-    (pathTo === paths.logIn || pathTo === paths.authCallback)
-  ) {
+  if (isAuthPath(pathTo)) {
     return pathTo
   }
 
@@ -27,7 +25,7 @@ export const getNextPathForAuth = (pathTo: string, authService: IAuthService): s
 
 // Adapt `getNextPath` to Vue Router way
 export const authNavigationGuardBeforeEach: NavigationGuardWithThis<undefined> = (to) => {
-  const nextPath = getNextPathForAuth(to.path, authService)
+  const nextPath = getNextPathForAuth(to.path, authService.getIsLoggedIn())
 
   // return `undefined` when there's no need to update path
   // otherwise, Vue Router tries to update path infinitely
