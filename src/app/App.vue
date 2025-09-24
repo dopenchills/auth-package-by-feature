@@ -1,6 +1,37 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import HelloWorld from 'src/features/top/views/components/HelloWorld.vue'
+import { watch } from 'vue'
+import { authService } from 'src/shared/authn/views/variables/authService'
+import { paths } from 'src/shared/routes/paths'
+
+const router = useRouter()
+const route = useRoute()
+
+// TODO: consider moving below to router guard
+watch(
+  [authService, route],
+  async () => {
+    console.log('loggedIn?', authService.getIsLoggedIn())
+    console.log(
+      'route.path === window.location.pathname',
+      window.location.pathname === paths.authCallback,
+    )
+
+    if (authService.getIsLoggedIn() === true) {
+      return
+    }
+
+    if (authService.getIsLoggedIn() === false && window.location.pathname === paths.authCallback) {
+      return
+    }
+
+    await router.push({
+      path: paths.logIn,
+    })
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

@@ -1,5 +1,6 @@
 import { err, ok, type Result } from 'src/shared/result/Result'
 import type { AuthState } from '../models/AuthState'
+import { paths } from 'src/shared/routes/paths'
 
 export interface IAuthService {
   logIn(): Promise<Result<void>>
@@ -18,7 +19,7 @@ export class AuthService implements IAuthService {
     console.log('logging in')
 
     // assuming browser navigate to external login page, then redirected to auth callback
-    window.location.href = '/auth/callback'
+    window.location.href = paths.authCallback
 
     return ok(undefined)
   }

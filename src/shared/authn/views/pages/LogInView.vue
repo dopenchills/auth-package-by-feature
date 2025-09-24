@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <h1>This is an login page</h1>
-    <button @click="() => authService.logIn()">login</button>
+    <button @click="async () => await authService.logIn()">login</button>
   </div>
 </template>
 
