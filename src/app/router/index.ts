@@ -1,3 +1,4 @@
+import { authNavigationGuardBeforeEach } from 'src/shared/authn/views/routes/authNavigationGuardBeforeEach'
 import { paths } from 'src/shared/routes/paths'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -29,5 +30,7 @@ const router = createRouter({
     },
   ],
 })
+
+router.beforeEach(authNavigationGuardBeforeEach)
 
 export default router

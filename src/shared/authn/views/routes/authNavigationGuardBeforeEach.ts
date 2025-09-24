@@ -1,0 +1,32 @@
+import type { NavigationGuardWithThis } from 'vue-router'
+import { authService } from '../variables/authService'
+import { paths } from 'src/shared/routes/paths'
+import type { IAuthService } from '../../services/AuthService'
+
+export const getNextPath = (pathTo: string, authService: IAuthService): string => {
+  if (authService.getIsLoggedIn() === true) {
+    return pathTo
+  }
+
+  if (
+    authService.getIsLoggedIn() === false &&
+    (pathTo === paths.logIn || pathTo === paths.authCallback)
+  ) {
+    return pathTo
+  }
+
+  return paths.logIn
+}
+
+// Adapt `getNextPath` to Vue Router way
+export const authNavigationGuardBeforeEach: NavigationGuardWithThis<undefined> = (to) => {
+  const nextPath = getNextPath(to.path, authService)
+
+  // return `undefined` when there's no need to update path
+  // otherwise, Vue Router tries to update path infinitely
+  if (to.path === nextPath) {
+    return
+  }
+
+  return nextPath
+}
