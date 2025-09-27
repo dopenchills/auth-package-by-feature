@@ -1,3 +1,5 @@
+import { redirectRouteBeforeEach } from 'src/features/router/views/redirectRouteBeforeEach'
+import { saveRouteBeforeEach } from 'src/features/router/views/saveRouteBeforeEach'
 import { authNavigationGuardBeforeEach } from 'src/features/shared.authn/views/router/authNavigationGuardBeforeEach'
 import { paths } from 'src/shared/router/paths'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -7,27 +9,25 @@ const router = createRouter({
   routes: [
     {
       path: paths.top,
-      name: 'home',
       component: () => import('src/features/top/views/pages/HomeView.vue'),
     },
     {
       path: paths.about,
-      name: 'about',
       component: () => import('src/features/top/views/pages/AboutView.vue'),
     },
     {
       path: paths.logIn,
-      name: 'login',
       component: () => import('src/features/shared.authn/views/pages/LogInView.vue'),
     },
     {
       path: paths.authCallback,
-      name: 'authCallback',
       component: () => import('src/features/shared.authn/views/pages/AuthCallbackView.vue'),
     },
   ],
 })
 
+router.beforeEach(saveRouteBeforeEach)
 router.beforeEach(authNavigationGuardBeforeEach)
+router.beforeEach(redirectRouteBeforeEach)
 
 export default router
