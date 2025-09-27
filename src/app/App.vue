@@ -1,24 +1,16 @@
 <script setup lang="ts">
+import { paths } from 'src/shared/router/paths'
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from 'src/features/top/views/components/HelloWorld.vue'
 </script>
 
 <template>
   <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="src/shared/views/assets/logo.svg"
-      width="125"
-      height="125"
-    />
-
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+      <nav style="display: flex; flex-direction: column">
+        <RouterLink :to="paths.top">Home</RouterLink>
+        <RouterLink :to="paths.about">About</RouterLink>
+        <RouterLink :to="paths.logIn">LogIn</RouterLink>
+        <RouterLink :to="paths.authCallback">AuthCallback</RouterLink>
       </nav>
     </div>
   </header>
