@@ -19,7 +19,7 @@ export class AuthService implements IAuthService {
     console.log('logging in')
 
     // assuming browser navigate to external login page, then redirected to auth callback
-    window.location.href = paths.authCallback
+    window.location.href = import.meta.env.BASE_URL + paths.authCallback
 
     return Promise.resolve(ok(undefined))
   }
