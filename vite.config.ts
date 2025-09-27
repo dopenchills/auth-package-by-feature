@@ -5,11 +5,13 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  // Use GitHub Pages base path only when building for Pages
+  base: mode === 'gh-pages' ? '/auth-package-by-feature/' : '/',
   plugins: [vue(), vueDevTools()],
   resolve: {
     alias: {
       src: fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-})
+}))
