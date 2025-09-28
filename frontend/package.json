@@ -17,6 +17,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@azure/msal-browser": "^4.24.0",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"
   },
