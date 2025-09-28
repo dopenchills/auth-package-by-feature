@@ -20,8 +20,8 @@ export const getNextPathForAuth = (pathTo: string, isLoggedIn: boolean): string 
 }
 
 // Adapt `getNextPath` to Vue Router way
-export const authNavigationGuardBeforeEach: NavigationGuardWithThis<undefined> = (to) => {
-  const nextPath = getNextPathForAuth(to.path, authService.getIsLoggedIn())
+export const authNavigationGuardBeforeEach: NavigationGuardWithThis<undefined> = async (to) => {
+  const nextPath = getNextPathForAuth(to.path, await authService.getIsLoggedIn())
 
   // return `undefined` when there's no need to update path
   // otherwise, Vue Router tries to update path infinitely

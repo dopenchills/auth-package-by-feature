@@ -12,8 +12,8 @@ const shouldSaveRoute = (to: string, isLoggedIn: boolean): boolean => {
   return false
 }
 
-export const saveRouteBeforeEach: NavigationGuardWithThis<undefined> = (to) => {
-  if (shouldSaveRoute(to.path, authService.getIsLoggedIn())) {
+export const saveRouteBeforeEach: NavigationGuardWithThis<undefined> = async (to) => {
+  if (shouldSaveRoute(to.path, await authService.getIsLoggedIn())) {
     sessionStorageService.save(AFTER_LOGIN_PATH_SESSION_STORAGE_KEY, to.path)
   }
 }

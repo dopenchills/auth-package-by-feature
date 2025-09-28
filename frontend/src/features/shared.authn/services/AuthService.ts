@@ -1,68 +1,109 @@
 import { err, ok, type Result } from 'src/shared/result/Result'
-import type { AuthState } from '../models/AuthState'
+import * as msal from '@azure/msal-browser'
 import { paths } from 'src/shared/router/paths'
 
 export interface IAuthService {
+  initialize(): Promise<msal.IPublicClientApplication>
   logIn(): Promise<Result<void>>
   handleLogInRedirect(): Promise<Result<void>>
   logOut(): Promise<Result<void>>
-  getIsLoggedIn(): boolean
+  getIsLoggedIn(): Promise<boolean>
   getAccessToken(): Promise<Result<string>>
 }
 
 export class AuthService implements IAuthService {
-  private state: AuthState = {
-    isLoggedIn: false,
+  private pca: msal.IPublicClientApplication | undefined
+
+  async initialize(): Promise<msal.IPublicClientApplication> {
+    this.pca = await msal.createStandardPublicClientApplication({
+      auth: {
+        clientId: '74157be3-dc6c-4cef-87f8-2a5147e6ae9d',
+        authority: 'https://login.microsoftonline.com/bd2dd8b7-2bf5-456d-9dda-80f8b462c6c9',
+        redirectUri: `${import.meta.env.BASE_URL}${paths.authCallback.replace(/^\//, '')}`,
+      },
+    })
+
+    await this.pca.initialize()
+
+    return this.pca
   }
 
-  logIn(): Promise<Result<void>> {
-    console.log('logging in')
-
-    // assuming browser navigate to external login page, then redirected to auth callback
-    window.location.href = paths.authCallback
-
-    return Promise.resolve(ok(undefined))
-  }
-
-  logOut(): Promise<Result<void>> {
-    console.log('logging out')
-
-    this.state = {
-      isLoggedIn: false,
+  private async getPca(): Promise<msal.IPublicClientApplication> {
+    if (this.pca === undefined) {
+      this.pca = await this.initialize()
     }
 
-    return Promise.resolve(ok(undefined))
+    return this.pca
   }
 
-  handleLogInRedirect(): Promise<Result<void>> {
-    console.log('handling logging in flow after redirect')
+  private async getAccount(): Promise<msal.AccountInfo | undefined> {
+    const pca = await this.getPca()
 
-    this.state = {
-      isLoggedIn: true,
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
+    const accounts = pca.getAllAccounts()
+    console.log(accounts)
+    if (accounts.length === 1) {
+      return accounts[0]
     }
 
-    return Promise.resolve(ok(undefined))
+    return undefined
   }
 
-  getIsLoggedIn(): boolean {
-    return this.state.isLoggedIn
+  async logIn(): Promise<Result<void>> {
+    const pca = await this.getPca()
+    await pca.loginRedirect({
+      scopes: ['User.Read'],
+    })
+
+    // not reaching here because of redirect
+    return ok(undefined)
   }
 
-  getAccessToken(): Promise<Result<string>> {
-    if (!this.state.isLoggedIn) {
-      return Promise.resolve(err(new Error('user is not logged in')))
+  async logOut(): Promise<Result<void>> {
+    const pca = await this.getPca()
+    await pca.logoutRedirect({
+      account: await this.getAccount(),
+    })
+
+    // not reaching here because of redirect
+    return ok(undefined)
+  }
+
+  async handleLogInRedirect(): Promise<Result<void>> {
+    const pca = await this.getPca()
+
+    try {
+      const authenticationResult = await pca.handleRedirectPromise()
+
+      if (authenticationResult === null) {
+        console.warn('Not coming back from auth redirect')
+      }
+
+      return ok(undefined)
+    } catch (error) {
+      console.error(error)
+      return error instanceof Error ? err(error) : err(new Error(String(error)))
+    }
+  }
+
+  async getIsLoggedIn(): Promise<boolean> {
+    return (await this.getAccount()) !== undefined
+  }
+
+  async getAccessToken(): Promise<Result<string>> {
+    const pca = await this.getPca()
+
+    if (!(await this.getIsLoggedIn())) {
+      return err(new Error('user is not logged in'))
     }
 
-    console.log('getting access token (refresh access token if needed)')
+    try {
+      const authenticationResult = await pca.acquireTokenSilent({
+        scopes: ['User.Read'],
+      })
 
-    this.state = {
-      isLoggedIn: true,
-      accessToken: 'accessToken2',
-      refreshToken: 'refreshToken2',
+      return ok(authenticationResult.accessToken)
+    } catch (error) {
+      return error instanceof Error ? err(error) : err(new Error(String(error)))
     }
-
-    return Promise.resolve(ok(this.state.accessToken))
   }
 }
