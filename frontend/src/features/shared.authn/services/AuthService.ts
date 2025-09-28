@@ -25,6 +25,7 @@ export class AuthService implements IAuthService {
         authority:
           'https://authpackagebyfeature.ciamlogin.com/bd2dd8b7-2bf5-456d-9dda-80f8b462c6c9',
         redirectUri: `${import.meta.env.BASE_URL}${paths.authCallback.replace(/^\//, '')}`,
+        navigateToLoginRequestUrl: false, // prevent MSAL from automatically redirect to previous page after login
       },
     })
 

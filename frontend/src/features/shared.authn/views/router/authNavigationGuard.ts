@@ -3,14 +3,13 @@ import type {
   AuthRouterGuardWorkflowFunction,
   AuthRouterGuardWorkflowContext,
 } from './AuthRouterGuardWorkflow'
-import { isAuthPath } from './helpers/pathHelpers'
 
 export const authNavigationGuard: AuthRouterGuardWorkflowFunction = async (
   context,
 ): Promise<AuthRouterGuardWorkflowContext> => {
   const isLoggedIn = await context.authService.getIsLoggedIn()
 
-  if (isLoggedIn && isAuthPath(context.to)) {
+  if (isLoggedIn && context.to === paths.logIn) {
     return {
       ...context,
       updatedTo: paths.top,
@@ -24,7 +23,7 @@ export const authNavigationGuard: AuthRouterGuardWorkflowFunction = async (
     }
   }
 
-  if (isAuthPath(context.to)) {
+  if (context.to === paths.logIn) {
     return {
       ...context,
       updatedTo: undefined,
