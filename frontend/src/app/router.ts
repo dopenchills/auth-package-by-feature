@@ -1,6 +1,5 @@
-import { redirectRouteBeforeEach } from 'src/features/router/views/redirectRouteBeforeEach'
-import { saveRouteBeforeEach } from 'src/features/router/views/saveRouteBeforeEach'
 import { authNavigationGuardBeforeEach } from 'src/features/shared.authn/views/router/authNavigationGuardBeforeEach'
+import { saveRouteBeforeEach } from 'src/features/shared.authn/views/router/saveRouteBeforeEach'
 import { paths } from 'src/shared/router/paths'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -28,6 +27,5 @@ const router = createRouter({
 
 router.beforeEach(saveRouteBeforeEach)
 router.beforeEach(authNavigationGuardBeforeEach)
-router.beforeEach(redirectRouteBeforeEach)
 
 export default router
