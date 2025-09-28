@@ -17,6 +17,7 @@ onMounted(async () => {
         <RouterLink :to="paths.about">About</RouterLink>
         <RouterLink :to="paths.logIn">LogIn</RouterLink>
         <RouterLink :to="paths.authCallback">AuthCallback</RouterLink>
+        <button @click="() => authService.logOut()">LogOut</button>
       </nav>
     </div>
   </header>

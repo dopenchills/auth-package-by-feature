@@ -15,10 +15,15 @@ export class AuthService implements IAuthService {
   private pca: msal.IPublicClientApplication | undefined
 
   async initialize(): Promise<msal.IPublicClientApplication> {
+    if (this.pca !== undefined) {
+      return this.pca
+    }
+
     this.pca = await msal.createStandardPublicClientApplication({
       auth: {
         clientId: '74157be3-dc6c-4cef-87f8-2a5147e6ae9d',
-        authority: 'https://login.microsoftonline.com/bd2dd8b7-2bf5-456d-9dda-80f8b462c6c9',
+        authority:
+          'https://authpackagebyfeature.ciamlogin.com/bd2dd8b7-2bf5-456d-9dda-80f8b462c6c9',
         redirectUri: `${import.meta.env.BASE_URL}${paths.authCallback.replace(/^\//, '')}`,
       },
     })
@@ -36,18 +41,6 @@ export class AuthService implements IAuthService {
     return this.pca
   }
 
-  private async getAccount(): Promise<msal.AccountInfo | undefined> {
-    const pca = await this.getPca()
-
-    const accounts = pca.getAllAccounts()
-    console.log(accounts)
-    if (accounts.length === 1) {
-      return accounts[0]
-    }
-
-    return undefined
-  }
-
   async logIn(): Promise<Result<void>> {
     const pca = await this.getPca()
     await pca.loginRedirect({
@@ -60,8 +53,9 @@ export class AuthService implements IAuthService {
 
   async logOut(): Promise<Result<void>> {
     const pca = await this.getPca()
+    const account = pca.getActiveAccount()
     await pca.logoutRedirect({
-      account: await this.getAccount(),
+      account,
     })
 
     // not reaching here because of redirect
@@ -75,18 +69,22 @@ export class AuthService implements IAuthService {
       const authenticationResult = await pca.handleRedirectPromise()
 
       if (authenticationResult === null) {
-        console.warn('Not coming back from auth redirect')
+        return ok(undefined)
       }
+
+      pca.setActiveAccount(authenticationResult.account)
 
       return ok(undefined)
     } catch (error) {
-      console.error(error)
       return error instanceof Error ? err(error) : err(new Error(String(error)))
     }
   }
 
   async getIsLoggedIn(): Promise<boolean> {
-    return (await this.getAccount()) !== undefined
+    const pca = await this.getPca()
+    const activeAccount = pca.getActiveAccount()
+
+    return activeAccount !== null
   }
 
   async getAccessToken(): Promise<Result<string>> {

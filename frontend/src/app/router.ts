@@ -1,4 +1,5 @@
 import { authNavigationGuardBeforeEach } from 'src/features/shared.authn/views/router/authNavigationGuardBeforeEach'
+import { handleLogInRedirectBeforeEach } from 'src/features/shared.authn/views/router/handleLogInRedirectBeforeEach'
 import { saveRouteBeforeEach } from 'src/features/shared.authn/views/router/saveRouteBeforeEach'
 import { paths } from 'src/shared/router/paths'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -25,6 +26,7 @@ const router = createRouter({
   ],
 })
 
+router.beforeEach(handleLogInRedirectBeforeEach)
 router.beforeEach(saveRouteBeforeEach)
 router.beforeEach(authNavigationGuardBeforeEach)
 
