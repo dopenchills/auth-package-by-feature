@@ -1,7 +1,7 @@
 import type { NavigationGuardWithThis } from 'vue-router'
 import { authService } from '../variables/authService'
 import { paths } from 'src/shared/router/paths'
-import { isAuthPath } from './helpers/isAuthPath'
+import { isAuthPath } from './helpers/pathHelpers'
 
 export const getNextPathForAuth = (pathTo: string, isLoggedIn: boolean): string => {
   if (isLoggedIn && isAuthPath(pathTo)) {
