@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { authService } from 'src/features/shared.authn/views/variables/authService'
 import { paths } from 'src/shared/router/paths'
-import { onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
-
-onMounted(async () => {
-  await authService.initialize()
-})
 </script>
 
 <template>
