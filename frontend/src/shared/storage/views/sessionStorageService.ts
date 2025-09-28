@@ -1,4 +1,5 @@
+import type { IStorage } from '../IStorage'
 import { SessionStorageService } from '../SessionStorageService'
 
 // Singleton
-export const sessionStorageService = new SessionStorageService()
+export const sessionStorageService: IStorage = new SessionStorageService()
