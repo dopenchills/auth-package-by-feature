@@ -1,6 +1,8 @@
-import { authNavigationGuardBeforeEach } from 'src/features/shared.authn/views/router/authNavigationGuardBeforeEach'
-import { handleLogInRedirectBeforeEach } from 'src/features/shared.authn/views/router/handleLogInRedirectBeforeEach'
-import { saveRouteBeforeEach } from 'src/features/shared.authn/views/router/saveRouteBeforeEach'
+import { authNavigationGuard } from 'src/features/shared.authn/views/router/authNavigationGuard'
+import type { AuthRouterGuardWorkflowContext } from 'src/features/shared.authn/views/router/AuthRouterGuardWorkflow'
+import { handleLogInRedirect } from 'src/features/shared.authn/views/router/handleLogInRedirect'
+import { saveRoute } from 'src/features/shared.authn/views/router/saveRoute'
+import { authService } from 'src/features/shared.authn/views/variables/authService'
 import { paths } from 'src/shared/router/paths'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -26,8 +28,20 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach(handleLogInRedirectBeforeEach)
-router.beforeEach(saveRouteBeforeEach)
-router.beforeEach(authNavigationGuardBeforeEach)
+router.beforeEach(async (to, from) => {
+  const result = await Promise.resolve<AuthRouterGuardWorkflowContext>({
+    to: to.path,
+    from: from.path,
+    authService,
+
+    // output
+    updatedTo: undefined,
+  })
+    .then(handleLogInRedirect)
+    .then(authNavigationGuard)
+    .then(saveRoute)
+
+  return result.updatedTo
+})
 
 export default router
