@@ -1,12 +1,9 @@
 import { paths } from 'src/shared/router/paths'
-import type {
-  AuthRouterGuardWorkflowFunction,
-  AuthRouterGuardWorkflowContext,
-} from './AuthRouterGuardWorkflow'
+import type { AuthRouterGuardFunction, AuthRouterGuardContext } from './AuthRouterGuard'
 
-export const authNavigationGuard: AuthRouterGuardWorkflowFunction = async (
+export const authNavigationGuard: AuthRouterGuardFunction = async (
   context,
-): Promise<AuthRouterGuardWorkflowContext> => {
+): Promise<AuthRouterGuardContext> => {
   const isLoggedIn = await context.authService.getIsLoggedIn()
 
   if (isLoggedIn && context.to === paths.logIn) {

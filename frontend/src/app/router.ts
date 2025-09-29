@@ -1,7 +1,7 @@
 import { authNavigationGuard } from 'src/features/shared.authn/views/router/authNavigationGuard'
-import type { AuthRouterGuardWorkflowContext } from 'src/features/shared.authn/views/router/AuthRouterGuardWorkflow'
-import { handleLogInRedirect } from 'src/features/shared.authn/views/router/handleLogInRedirect'
-import { saveRoute } from 'src/features/shared.authn/views/router/saveRoute'
+import type { AuthRouterGuardContext } from 'src/features/shared.authn/views/router/AuthRouterGuard'
+import { setupAuth } from 'src/features/shared.authn/views/router/setupAuth'
+import { saveRouteWhenLoggingIn } from 'src/features/shared.authn/views/router/saveRouteWhenLoggingIn'
 import { authService } from 'src/features/shared.authn/views/variables/authService'
 import { paths } from 'src/shared/router/paths'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -29,7 +29,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
-  const result = await Promise.resolve<AuthRouterGuardWorkflowContext>({
+  const result = await Promise.resolve<AuthRouterGuardContext>({
     to: to.path,
     from: from.path,
     authService,
@@ -37,9 +37,9 @@ router.beforeEach(async (to, from) => {
     // output
     updatedTo: undefined,
   })
-    .then(handleLogInRedirect)
+    .then(setupAuth)
     .then(authNavigationGuard)
-    .then(saveRoute)
+    .then(saveRouteWhenLoggingIn)
 
   return result.updatedTo
 })
